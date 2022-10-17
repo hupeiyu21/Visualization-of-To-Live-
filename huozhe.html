@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>force</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+
+<svg height="2000" width="2000"></svg>
+
+</body>
+
+<script>
+
+  //数据
+  var nodes = [//节点集
+    { name: "我" },//0
+    { name: "福贵","category": "fixed","x":width / 2 , "y": height / 2 },//1
+    { name: "凤霞" , x: width / 2 , y: height / 2 , fixed:true},//2
+    { name: "福贵爹" , "category": "unfixed"},//3
+    { name: "长根" , "category": "unfixed"},//4
+    { name: "家珍" , "category": "unfixed"},//5
+    { name: "福贵娘" , "category": "unfixed"},//6
+    { name: "沈先生", "category": "unfixed" },//7
+    { name: "龙二" , "category": "unfixed"},//8
+    { name: "福贵丈人" , "category": "unfixed"},//9
+    { name: "赌徒一", "category": "unfixed" },//10
+    { name: "赌徒二" , "category": "unfixed"},//11
+    { name: "福贵妈" , "category": "unfixed"},//12
+    { name: "有钱人" , "category": "unfixed"},//13
+    { name: "王喜" , "category": "unfixed"},//14
+    { name: "富贵" , "category": "unfixed"},//15
+    { name: "富贵娘" , "category": "unfixed"},//16
+    { name: "有庆" , "category": "unfixed"},//17
+    { name: "敲门小孩" , "category": "unfixed"},//18
+    { name: "县太爷家仆人" , "category": "unfixed"},//19
+    { name: "老全" , "category": "unfixed"},//20
+    { name: "春生" , "category": "unfixed"},//21
+    { name: "老全旧识" , "category": "unfixed"},//22
+    { name: "老良" , "category": "unfixed"},//23
+    { name: "连长" , "category": "unfixed"},//24
+    { name: "解放军" , "category": "unfixed"},//25
+    { name: "领养凤霞的人家" , "category": "unfixed"},//26
+    { name: "队长" , "category": "unfixed"},//27
+    { name: "王先生" , "category": "unfixed"},//28
+    { name: "老孙" , "category": "unfixed"},//29
+    { name: "女老师" , "category": "unfixed"},//30
+    { name: "校长" , "category": "unfixed"},//31
+    { name: "体育老师", "category": "unfixed"},//32
+    { name: "王四" , "category": "unfixed"},//33
+    { name: "有庆同学" , "category": "unfixed"},//34
+    { name: "医生一" , "category": "unfixed"},//35
+    { name: "医生二" , "category": "unfixed"},//36
+    { name: "二喜" , "category": "unfixed"},//37
+    { name: "医生" , "category": "unfixed"},//38
+    { name: "苦根" , "category": "unfixed"},//39
+    { name: "二喜工友" , "category": "unfixed"},//40
+    { name: "老牛" , "category": "unfixed"},//41
+    { name: "苦根朋友" , "category": "unfixed"},//42
+    { name: "二喜邻居" , "category": "unfixed"},//43
+    { name: "赤膊男人" , "category": "unfixed"},//44
+    { name: "红卫兵" , "category": "unfixed"},//45
+    { name: "二喜带来的城里人" , "category": "unfixed"},//46
+    { name: "二喜请的帮工" , "category": "unfixed"}//47
+  ];
+  var edges = [//边集
+    { source: 0, target: 1, relation: "路人", value: 3 },
+    { source: 3, target: 2, relation: "爷孙", value: 4},
+    { source: 1, target: 4, relation: "雇佣", value: 6 },//
+    { source: 1, target: 9, relation: "姻亲", value: 6 },//
+    { source: 5, target: 1, relation: "夫妻", value: 3 },
+    { source: 7, target: 8, relation: "赌友", value: 4 },//
+    { source: 3, target: 6, relation: "夫妻", value: 5 },
+    { source: 5, target: 9, relation: "父女", value: 3 },
+    { source: 3, target: 9, relation: "姻亲", value: 3 },
+    { source: 6, target: 9, relation: "姻亲", value: 3 },
+    { source: 3, target: 15, relation: "佃户", value: 4 },
+    { source: 0, target: 8, relation: "佃户", value: 2 },//
+    { source: 1, target: 3, relation: "父子", value: 6 },//
+    { source: 1, target: 2, relation: "父女", value: 6 },//
+    { source: 1, target: 19, relation: "路人", value: 6 },
+    { source: 1, target: 20, relation: "路人", value: 6 },
+    { source: 1, target: 24, relation: "上下属", value: 6 },
+    { source: 1, target: 25, relation: "战友", value: 5 },
+    { source: 2, target: 5, relation: "母女", value: 4 },
+    { source: 18, target: 5, relation: "母子", value: 3 },
+    { source: 17, target: 5, relation: "婆媳", value: 4 },
+    { source: 17, target: 2, relation: "外祖孙", value: 5 },
+    { source: 17, target: 18, relation: "外祖孙", value: 3 },
+    { source: 20, target: 24, relation: "路人", value: 3 },
+    { source: 25, target: 21, relation: "战友", value: 4 },
+    { source: 25, target: 23, relation: "战友", value: 3 },
+    { source: 24, target: 25, relation: "上下属", value: 3 },
+    { source: 1, target: 25, relation: "俘虏与被俘虏", value: 6 },
+    { source: 2, target: 18, relation: "姐弟", value: 4 },
+    { source: 18, target: 15, relation: "邻居", value: 5 },
+    { source: 1, target: 29, relation: "邻居", value: 6 },
+    { source: 27, target: 18, relation: "上下属", value: 5 },
+    { source: 1, target: 30, relation: "老师与学生家长", value: 6 },
+    { source: 18, target: 32, relation: "师生", value: 6 },
+    { source: 1, target: 33, relation: "同乡", value: 3 },
+    { source: 2, target: 33, relation: "同乡", value: 4 },
+    { source: 1, target: 27, relation: "邻居", value: 5 },
+    { source: 1, target: 37, relation: "姻亲", value: 6 },
+    { source: 5, target: 21, relation: "战友妻子", value: 5 },
+    { source: 2, target: 37, relation: "相亲双方", value: 4 },
+    { source: 27, target: 44, relation: "阶级敌人", value: 7 },
+    { source: 21, target: 44, relation: "阶级敌人", value: 6 },
+    { source: 37, target: 38, relation: "医患", value: 5 },
+    { source: 1, target: 39, relation: "外祖孙", value: 4 },
+    { source: 37, target: 39, relation: "父子", value: 7 },
+    { source: 39, target: 42, relation: "友人", value: 6 },
+    { source: 27, target: 39, relation: "邻居", value: 5 },
+    { source: 1, target: 41, relation: "家人", value: 3 },
+    { source: 1, target: 43, relation: "买卖双方", value: 4 }
+
+  ];
+
+
+
+  var margin = 30;//边距
+  var svg = d3.select('svg');
+  var width = svg.attr('width');
+  var height = svg.attr('height');
+
+  //创建一个分组 并设置偏移
+  var g = svg.append('g').attr('transform', 'translate(' + margin + ',' + margin + ')');
+
+
+  //新建一个颜色比例尺
+  var scaleColor = d3.scaleOrdinal()
+          .domain(d3.range(nodes.length))
+          .range(d3.schemeCategory10);
+
+  //新建一个力导向图
+  var forceSimulation = d3.forceSimulation()
+          .force("link", d3.forceLink())
+          .force("charge", d3.forceManyBody())
+          .force("center", d3.forceCenter());
+
+
+  //生成节点数据
+  forceSimulation.nodes(nodes)
+          .on('tick', linksTick);//这个函数下面会讲解
+
+
+  //生成边数据
+  forceSimulation.force('link')
+          .links(edges)
+          .distance(function (d, i) {
+            return d.value * 90;//设置边长
+          });
+
+  //设置图形 中心点
+  forceSimulation.force('center')
+          .x(width / 2)//设置x坐标
+          .y(height / 2)//设置y坐标
+
+  //再来看下顶点数据 和 边数据
+  console.log(nodes);
+  console.log(edges);
+
+
+  //绘制边  这里注意一下绘制顺序  在d3中  各元素是有层级关系的，先绘制的在下面
+  var links = g.append('g')
+          .selectAll('line')
+          .data(edges)
+          .enter()
+          .append('line')
+          .attr('stroke', function (d, i) {
+            return scaleColor(i);//设置边线颜色
+          })
+          .attr('storke-width', '1');//设置边线宽度
+
+
+  //绘制边上的文字
+  var linksText = g.append('g')
+          .selectAll('text')
+          .data(edges)
+          .enter()
+          .append('text')
+          .text(function (d, i) {
+            return d.relation;
+          });
+
+
+  //创建节点分组
+  var gs = g.selectAll('.circle')
+          .data(nodes)
+          .enter()
+          .append('g')
+          .attr('transform', function (d, i) {
+            return 'translate(' + d.x + ',' + d.y + ')'
+          })
+          .call(
+                  d3.drag()//相当于移动端的拖拽手势  分以下三个阶段
+                          .on('start', start)
+                          .on('drag', drag)
+                          .on('end', end)
+          );
+
+  //绘制节点
+  gs.append('circle')
+          .attr('r', 10)
+          .attr('fill', function (d, i) {
+            return scaleColor(i);
+          });
+
+  //绘制文字
+  gs.append('text')
+          .text(function (d, i) {
+            return d.name;
+          });
+
+
+
+
+
+  function linksTick() {
+    links
+            .attr("x1", function (d) { return d.source.x; })
+            .attr("y1", function (d) { return d.source.y; })
+            .attr("x2", function (d) { return d.target.x; })
+            .attr("y2", function (d) { return d.target.y; });
+
+    linksText
+            .attr("x", function (d) {
+              return (d.source.x + d.target.x) / 2;
+            })
+            .attr("y", function (d) {
+              return (d.source.y + d.target.y) / 2;
+            });
+
+    gs && gs.attr('transform', function (d, i) {
+      return 'translate(' + d.x + ',' + d.y + ')';
+    })
+
+  }
+
+
+  function start(d) {
+    if (!d3.event.active) {//event.active 属性对判断并发的拖拽手势序列中的 start 事件和 end 事件: 在拖拽手势开始时为0，在拖拽结束最后一个手势事件时为0
+      //这里就是drag的过程中
+      forceSimulation.alphaTarget(0.6).restart();//设置衰减系数，对节点位置移动过程的模拟，数值越高移动越快，数值范围[0，1]
+    }
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+
+  function drag(d) {
+    d.fx = d3.event.x;
+    d.fy = d3.event.y;
+  }
+
+  function end(d) {
+    if (!d3.event.active) {
+      forceSimulation.alphaTarget(0);
+    }
+    d.fx = null;
+    d.fy = null;
+  }
+
+
+
+
+
+
+</script>
+
+</html>
+
