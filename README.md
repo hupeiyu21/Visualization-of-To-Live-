@@ -11,10 +11,10 @@ The reading of long texts and the viewing of films and dramas, which contain com
 <img width="712" alt="image" src="https://user-images.githubusercontent.com/102003754/196099200-a6063c84-a9ed-4903-beac-55e1c589ebfb.png">
 
 ## Outcomes
+[SURF2022.pdf](https://github.com/hupeiyu21/Visualization-of-To-Live-/files/9797325/SURF2022.pdf)
 
 
-## Acknowledgments
+## Reference
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+Hu, Yifan, and Lei Shi. "Visualizing large graphs." Wiley Interdisciplinary Reviews: Computational Statistics 7.2 (2015): 115-136.
+Hu, Yifan. "Efficient, high-quality force-directed graph drawing." Mathematica journal 10.1 (2005): 37-71.
